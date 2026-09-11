@@ -1,47 +1,118 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { Asset, AssetType } from '../types/asset';
 import { HistoryChart } from './HistoryChart';
+import { api } from '../utils/api';
 
 // Custom inline SVG icons
 const BankIcon = () => (
-  <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+  <svg
+    className="w-5 h-5 text-indigo-400"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+    />
   </svg>
 );
 
 const CashIcon = () => (
-  <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+  <svg
+    className="w-5 h-5 text-emerald-400"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+    />
   </svg>
 );
 
 const HomeIcon = () => (
-  <svg className="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+  <svg
+    className="w-5 h-5 text-sky-400"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+    />
   </svg>
 );
 
 const CarIcon = () => (
-  <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4H8m12 4v7m0 0H4M4 14v-7m0 0l4-4m0 4v7m0 0h16M8 21v-3m8 3v-3" />
+  <svg
+    className="w-5 h-5 text-amber-400"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M8 7h12m0 0l-4-4H8m12 4v7m0 0H4M4 14v-7m0 0l4-4m0 4v7m0 0h16M8 21v-3m8 3v-3"
+    />
   </svg>
 );
 
 const ChartIcon = () => (
-  <svg className="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21h12a2 2 0 002-2V7a2 2 0 00-2-2H8a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  <svg
+    className="w-5 h-5 text-violet-400"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M7 12l3-3 3 3 4-4M8 21h12a2 2 0 002-2V7a2 2 0 00-2-2H8a2 2 0 00-2 2v12a2 2 0 002 2z"
+    />
   </svg>
 );
 
 const TrashIcon = () => (
-  <svg className="w-4 h-4 text-zinc-500 hover:text-red-455 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+  <svg
+    className="w-4 h-4 text-zinc-500 hover:text-red-455 transition-colors"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+    />
   </svg>
 );
 
 const EditIcon = () => (
-  <svg className="w-4 h-4 text-zinc-500 hover:text-zinc-200 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+  <svg
+    className="w-4 h-4 text-zinc-500 hover:text-zinc-200 transition-colors"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+    />
   </svg>
 );
 
@@ -51,13 +122,57 @@ const PlusIcon = () => (
   </svg>
 );
 
+const RefreshIcon = ({ spinning }: { spinning?: boolean }) => (
+  <svg
+    className={`w-4 h-4 ${spinning ? 'animate-spin' : ''}`}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+    />
+  </svg>
+);
+
 // Map categories to labels, colors, and icons
-const CATEGORY_MAP: Record<AssetType, { label: string; colorClass: string; bgClass: string; icon: React.ComponentType }> = {
-  bank: { label: 'Bank Accounts', colorClass: 'text-indigo-400', bgClass: 'bg-indigo-500', icon: BankIcon },
-  cash: { label: 'Cash', colorClass: 'text-emerald-400', bgClass: 'bg-emerald-500', icon: CashIcon },
-  real_estate: { label: 'Real Estate', colorClass: 'text-sky-400', bgClass: 'bg-sky-500', icon: HomeIcon },
-  vehicle: { label: 'Vehicles', colorClass: 'text-amber-400', bgClass: 'bg-amber-500', icon: CarIcon },
-  investment: { label: 'Investments', colorClass: 'text-violet-400', bgClass: 'bg-violet-500', icon: ChartIcon },
+const CATEGORY_MAP: Record<
+  AssetType,
+  { label: string; colorClass: string; bgClass: string; icon: React.ComponentType }
+> = {
+  bank: {
+    label: 'Bank Accounts',
+    colorClass: 'text-indigo-400',
+    bgClass: 'bg-indigo-500',
+    icon: BankIcon,
+  },
+  cash: {
+    label: 'Cash',
+    colorClass: 'text-emerald-400',
+    bgClass: 'bg-emerald-500',
+    icon: CashIcon,
+  },
+  real_estate: {
+    label: 'Real Estate',
+    colorClass: 'text-sky-400',
+    bgClass: 'bg-sky-500',
+    icon: HomeIcon,
+  },
+  vehicle: {
+    label: 'Vehicles',
+    colorClass: 'text-amber-400',
+    bgClass: 'bg-amber-500',
+    icon: CarIcon,
+  },
+  investment: {
+    label: 'Investments',
+    colorClass: 'text-violet-400',
+    bgClass: 'bg-violet-500',
+    icon: ChartIcon,
+  },
 };
 
 interface DashboardProps {
@@ -68,6 +183,8 @@ interface DashboardProps {
 export function Dashboard({ assets, setAssets }: DashboardProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
+  const [livePrices, setLivePrices] = useState<Record<string, number>>({});
+  const [isRefreshingPrices, setIsRefreshingPrices] = useState(false);
 
   // Form State
   const [name, setName] = useState('');
@@ -79,14 +196,70 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
   const [location, setLocation] = useState('');
   const [modelYear, setModelYear] = useState('');
   const [symbol, setSymbol] = useState('');
+  const [assetClass, setAssetClass] = useState<'stock' | 'crypto'>('stock');
   const [shares, setShares] = useState('');
   const [purchasePrice, setPurchasePrice] = useState('');
   const [notes, setNotes] = useState('');
 
+  const getEffectiveValue = useCallback(
+    (asset: Asset): number => {
+      if (asset.type === 'investment' && asset.details?.symbol && asset.details?.shares) {
+        const livePrice = livePrices[asset.details.symbol];
+        if (livePrice != null) return asset.details.shares * livePrice;
+      }
+      return asset.value;
+    },
+    [livePrices],
+  );
+
+  const fetchLivePrices = useCallback(async () => {
+    const uniquePairs = Array.from(
+      new Map(
+        assets
+          .filter((a) => a.type === 'investment' && a.details?.symbol)
+          .map((a) => {
+            const sym = a.details!.symbol!;
+            const cls = a.details!.assetClass || 'stock';
+            return [`${sym}:${cls}`, { symbol: sym, assetClass: cls }] as const;
+          }),
+      ).values(),
+    );
+
+    if (uniquePairs.length === 0) return;
+
+    setIsRefreshingPrices(true);
+    try {
+      const results = await Promise.allSettled(
+        uniquePairs.map((pair) => api.fetchQuote(pair.symbol, pair.assetClass)),
+      );
+
+      setLivePrices((prev) => {
+        const next = { ...prev };
+        results.forEach((result, i) => {
+          const pair = uniquePairs[i];
+          if (!pair) return;
+          if (result.status === 'fulfilled') {
+            next[pair.symbol] = result.value.price;
+          }
+          // On failure, leave the previous entry (if any) untouched so
+          // getEffectiveValue keeps falling back to asset.value.
+        });
+        return next;
+      });
+    } finally {
+      setIsRefreshingPrices(false);
+    }
+  }, [assets]);
+
+  useEffect(() => {
+    fetchLivePrices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Calculations
   const totalNetWorth = useMemo(() => {
-    return assets.reduce((sum, asset) => sum + asset.value, 0);
-  }, [assets]);
+    return assets.reduce((sum, asset) => sum + getEffectiveValue(asset), 0);
+  }, [assets, getEffectiveValue]);
 
   const categoryBreakdown = useMemo(() => {
     const breakdown: Record<AssetType, number> = {
@@ -98,19 +271,21 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
     };
 
     assets.forEach((asset) => {
-      breakdown[asset.type] += asset.value;
+      breakdown[asset.type] += getEffectiveValue(asset);
     });
 
-    return Object.entries(breakdown).map(([key, val]) => {
-      const percentage = totalNetWorth > 0 ? (val / totalNetWorth) * 100 : 0;
-      return {
-        type: key as AssetType,
-        value: val,
-        percentage,
-        ...CATEGORY_MAP[key as AssetType],
-      };
-    }).sort((a, b) => b.value - a.value);
-  }, [assets, totalNetWorth]);
+    return Object.entries(breakdown)
+      .map(([key, val]) => {
+        const percentage = totalNetWorth > 0 ? (val / totalNetWorth) * 100 : 0;
+        return {
+          type: key as AssetType,
+          value: val,
+          percentage,
+          ...CATEGORY_MAP[key as AssetType],
+        };
+      })
+      .sort((a, b) => b.value - a.value);
+  }, [assets, totalNetWorth, getEffectiveValue]);
 
   // Actions
   const handleOpenEdit = (asset: Asset) => {
@@ -126,6 +301,7 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
     setLocation(asset.details?.location || '');
     setModelYear(asset.details?.modelYear?.toString() || '');
     setSymbol(asset.details?.symbol || '');
+    setAssetClass(asset.details?.assetClass || 'stock');
     setShares(asset.details?.shares?.toString() || '');
     setPurchasePrice(asset.details?.purchasePrice?.toString() || '');
     setNotes(asset.details?.notes || '');
@@ -157,6 +333,7 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
       if (notes) details.notes = notes;
     } else if (type === 'investment') {
       if (symbol) details.symbol = symbol;
+      if (symbol) details.assetClass = assetClass;
       if (shares) details.shares = parseFloat(shares);
     }
 
@@ -174,8 +351,8 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
                 lastUpdated: new Date().toISOString(),
                 details: Object.keys(details).length ? details : undefined,
               }
-            : a
-        )
+            : a,
+        ),
       );
     } else {
       // Add operation
@@ -207,6 +384,7 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
     setLocation('');
     setModelYear('');
     setSymbol('');
+    setAssetClass('stock');
     setShares('');
     setPurchasePrice('');
     setNotes('');
@@ -231,13 +409,23 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
       {/* Top Header */}
       <header className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-bold text-white">Asset Portfolio</h2>
-        <button
-          onClick={handleOpenAdd}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 active:scale-95 text-white rounded-lg transition"
-        >
-          <PlusIcon />
-          Add Asset
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={fetchLivePrices}
+            disabled={isRefreshingPrices}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 active:scale-95 disabled:opacity-50 disabled:active:scale-100 text-white rounded-lg transition"
+          >
+            <RefreshIcon spinning={isRefreshingPrices} />
+            {isRefreshingPrices ? 'Refreshing...' : 'Refresh Prices'}
+          </button>
+          <button
+            onClick={handleOpenAdd}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 active:scale-95 text-white rounded-lg transition"
+          >
+            <PlusIcon />
+            Add Asset
+          </button>
+        </div>
       </header>
 
       {/* History Chart */}
@@ -252,7 +440,9 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
           {/* Net Worth Hero Card */}
           <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -mr-8 -mt-8" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Total Net Worth</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              Total Net Worth
+            </span>
             <div className="mt-2 text-4xl font-extrabold text-white tracking-tight">
               {formatCurrency(totalNetWorth)}
             </div>
@@ -264,7 +454,9 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
 
           {/* Category Breakdown Card */}
           <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xl">
-            <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400 mb-4">Breakdown by Class</h3>
+            <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400 mb-4">
+              Breakdown by Class
+            </h3>
             <div className="flex flex-col gap-4">
               {categoryBreakdown.map((cat) => {
                 const Icon = cat.icon;
@@ -295,7 +487,9 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
         {/* Right Column: Asset List */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xl">
-            <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400 mb-4">Your Assets</h3>
+            <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400 mb-4">
+              Your Assets
+            </h3>
 
             {assets.length === 0 ? (
               <div className="py-12 text-center text-zinc-500">
@@ -320,32 +514,43 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
                             <h4 className="font-semibold text-sm text-zinc-200">{asset.name}</h4>
                             <p className="text-xs text-zinc-400">
                               {asset.type === 'bank' && asset.details?.institution && (
-                                <span>{asset.details.institution} {asset.details.accountNumber}</span>
+                                <span>
+                                  {asset.details.institution} {asset.details.accountNumber}
+                                </span>
                               )}
                               {asset.type === 'real_estate' && asset.details?.location && (
                                 <span>
                                   {asset.details.location}
-                                  {asset.details.purchasePrice && ` • Purchased for ${formatCurrency(asset.details.purchasePrice)}`}
+                                  {asset.details.purchasePrice &&
+                                    ` • Purchased for ${formatCurrency(asset.details.purchasePrice)}`}
                                 </span>
                               )}
-                              {asset.type === 'vehicle' && (asset.details?.modelYear || asset.details?.purchasePrice) && (
-                                <span>
-                                  {asset.details.modelYear && `${asset.details.modelYear}`}
-                                  {asset.details.modelYear && asset.details.purchasePrice && ' • '}
-                                  {asset.details.purchasePrice && `Purchased for ${formatCurrency(asset.details.purchasePrice)}`}
-                                </span>
-                              )}
+                              {asset.type === 'vehicle' &&
+                                (asset.details?.modelYear || asset.details?.purchasePrice) && (
+                                  <span>
+                                    {asset.details.modelYear && `${asset.details.modelYear}`}
+                                    {asset.details.modelYear &&
+                                      asset.details.purchasePrice &&
+                                      ' • '}
+                                    {asset.details.purchasePrice &&
+                                      `Purchased for ${formatCurrency(asset.details.purchasePrice)}`}
+                                  </span>
+                                )}
                               {asset.type === 'investment' && asset.details?.symbol && (
-                                <span>{asset.details.symbol} • {asset.details.shares} shares</span>
+                                <span>
+                                  {asset.details.symbol} • {asset.details.shares} shares
+                                </span>
                               )}
-                              {asset.type === 'cash' && <span className="capitalize">{asset.type}</span>}
+                              {asset.type === 'cash' && (
+                                <span className="capitalize">{asset.type}</span>
+                              )}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="text-right">
                             <div className="font-bold text-sm text-white">
-                              {formatCurrency(asset.value, asset.currency)}
+                              {formatCurrency(getEffectiveValue(asset), asset.currency)}
                             </div>
                             <div className="text-[10px] text-zinc-500">
                               Updated {new Date(asset.lastUpdated).toLocaleDateString()}
@@ -536,33 +741,64 @@ export function Dashboard({ assets, setAssets }: DashboardProps) {
               )}
 
               {type === 'investment' && (
-                <div className="grid grid-cols-2 gap-4">
+                <>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
-                      Ticker / Symbol
+                      Asset Class
                     </label>
-                    <input
-                      type="text"
-                      value={symbol}
-                      onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-                      placeholder="VOO"
-                      className="w-full px-3.5 py-2 bg-zinc-950 border border-zinc-800 focus:border-zinc-700 text-white text-sm rounded-lg outline-none transition"
-                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setAssetClass('stock')}
+                        className={`flex-1 px-3.5 py-2 text-sm rounded-lg border transition ${
+                          assetClass === 'stock'
+                            ? 'bg-white text-zinc-950 border-white'
+                            : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-zinc-700'
+                        }`}
+                      >
+                        Stock
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAssetClass('crypto')}
+                        className={`flex-1 px-3.5 py-2 text-sm rounded-lg border transition ${
+                          assetClass === 'crypto'
+                            ? 'bg-white text-zinc-950 border-white'
+                            : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-zinc-700'
+                        }`}
+                      >
+                        Crypto
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
-                      Shares
-                    </label>
-                    <input
-                      type="number"
-                      step="any"
-                      value={shares}
-                      onChange={(e) => setShares(e.target.value)}
-                      placeholder="e.g. 10.5"
-                      className="w-full px-3.5 py-2 bg-zinc-950 border border-zinc-800 focus:border-zinc-700 text-white text-sm rounded-lg outline-none transition"
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+                        Ticker / Symbol
+                      </label>
+                      <input
+                        type="text"
+                        value={symbol}
+                        onChange={(e) => setSymbol(e.target.value.toUpperCase())}
+                        placeholder={assetClass === 'crypto' ? 'BTC' : 'VOO'}
+                        className="w-full px-3.5 py-2 bg-zinc-950 border border-zinc-800 focus:border-zinc-700 text-white text-sm rounded-lg outline-none transition"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+                        Shares
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={shares}
+                        onChange={(e) => setShares(e.target.value)}
+                        placeholder="e.g. 10.5"
+                        className="w-full px-3.5 py-2 bg-zinc-950 border border-zinc-800 focus:border-zinc-700 text-white text-sm rounded-lg outline-none transition"
+                      />
+                    </div>
                   </div>
-                </div>
+                </>
               )}
 
               {/* Form Buttons */}

@@ -10,14 +10,34 @@ const PlusIcon = () => (
 );
 
 const TrashIcon = () => (
-  <svg className="w-4 h-4 text-zinc-550 hover:text-red-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+  <svg
+    className="w-4 h-4 text-zinc-550 hover:text-red-400 transition-colors"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+    />
   </svg>
 );
 
 const EditIcon = () => (
-  <svg className="w-4 h-4 text-zinc-500 hover:text-zinc-200 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+  <svg
+    className="w-4 h-4 text-zinc-500 hover:text-zinc-200 transition-colors"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+    />
   </svg>
 );
 
@@ -34,7 +54,6 @@ export function BudgetOverview({
   transactions,
   setTransactions,
 }: BudgetOverviewProps) {
-
   // Modals / Forms State
   const [isTxFormOpen, setIsTxFormOpen] = useState(false);
   const [isBudgetFormOpen, setIsBudgetFormOpen] = useState(false);
@@ -99,10 +118,8 @@ export function BudgetOverview({
 
     setBudgets(
       budgets.map((b) =>
-        b.category === editingBudgetCategory
-          ? { ...b, limit: parseFloat(budgetLimitInput) }
-          : b
-      )
+        b.category === editingBudgetCategory ? { ...b, limit: parseFloat(budgetLimitInput) } : b,
+      ),
     );
     setIsBudgetFormOpen(false);
     setEditingBudgetCategory(null);
@@ -139,7 +156,9 @@ export function BudgetOverview({
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h2 className="text-xl font-bold text-white">Monthly Budgets</h2>
-          <p className="text-sm text-zinc-400">Track and compare actual spending against your target budgets</p>
+          <p className="text-sm text-zinc-400">
+            Track and compare actual spending against your target budgets
+          </p>
         </div>
         <button
           onClick={() => setIsTxFormOpen(true)}
@@ -156,7 +175,9 @@ export function BudgetOverview({
         <div className="lg:col-span-1 flex flex-col gap-6">
           <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -mr-8 -mt-8" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Total Monthly Spend</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              Total Monthly Spend
+            </span>
             <div className="mt-2 text-4xl font-extrabold text-white tracking-tight">
               {formatCurrency(totalSpending)}
             </div>
@@ -168,7 +189,11 @@ export function BudgetOverview({
             <div className="mt-6 flex flex-col gap-2">
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-zinc-400">Total Budget Utilized</span>
-                <span className={totalSpending > totalBudget ? 'text-rose-400 font-bold' : 'text-emerald-400'}>
+                <span
+                  className={
+                    totalSpending > totalBudget ? 'text-rose-400 font-bold' : 'text-emerald-400'
+                  }
+                >
                   {totalBudget > 0 ? ((totalSpending / totalBudget) * 100).toFixed(0) : 0}%
                 </span>
               </div>
@@ -177,7 +202,9 @@ export function BudgetOverview({
                   className={`h-full transition-all duration-500 ${
                     totalSpending > totalBudget ? 'bg-rose-500' : 'bg-indigo-500'
                   }`}
-                  style={{ width: `${Math.min(100, totalBudget > 0 ? (totalSpending / totalBudget) * 100 : 0)}%` }}
+                  style={{
+                    width: `${Math.min(100, totalBudget > 0 ? (totalSpending / totalBudget) * 100 : 0)}%`,
+                  }}
                 />
               </div>
             </div>
@@ -187,7 +214,9 @@ export function BudgetOverview({
         {/* Categories Breakdown List */}
         <div className="lg:col-span-2 flex flex-col gap-4">
           <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xl">
-            <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400 mb-4">Budgets by Category</h3>
+            <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400 mb-4">
+              Budgets by Category
+            </h3>
             <div className="flex flex-col gap-4">
               {budgets.map((b) => {
                 const actual = spendingByCategory[b.category];
@@ -196,10 +225,15 @@ export function BudgetOverview({
                 const catConfig = EXPENSE_CATEGORY_MAP[b.category];
 
                 return (
-                  <div key={b.category} className="group p-4 rounded-xl bg-zinc-950 border border-zinc-850 flex flex-col gap-3">
+                  <div
+                    key={b.category}
+                    className="group p-4 rounded-xl bg-zinc-950 border border-zinc-850 flex flex-col gap-3"
+                  >
                     <div className="flex justify-between items-center text-xs">
                       <div>
-                        <span className="font-semibold text-sm text-zinc-200">{catConfig.label}</span>
+                        <span className="font-semibold text-sm text-zinc-200">
+                          {catConfig.label}
+                        </span>
                         <div className="mt-1 text-[11px] text-zinc-400">
                           {formatCurrency(actual)} of {formatCurrency(b.limit)}
                         </div>
@@ -243,7 +277,9 @@ export function BudgetOverview({
 
       {/* Transaction List and Registry */}
       <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xl">
-        <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400 mb-4">Transactions</h3>
+        <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400 mb-4">
+          Transactions
+        </h3>
         {transactions.length === 0 ? (
           <div className="py-12 text-center text-zinc-500">
             No transactions recorded this month.
@@ -289,9 +325,12 @@ export function BudgetOverview({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="w-full max-w-sm rounded-2xl bg-zinc-900 border border-zinc-850 p-6 shadow-2xl relative">
             <h3 className="text-lg font-bold text-white mb-2">
-              Edit {editingBudgetCategory ? EXPENSE_CATEGORY_MAP[editingBudgetCategory].label : ''} Budget
+              Edit {editingBudgetCategory ? EXPENSE_CATEGORY_MAP[editingBudgetCategory].label : ''}{' '}
+              Budget
             </h3>
-            <p className="text-xs text-zinc-400 mb-4">Update the monthly spending limit for this category.</p>
+            <p className="text-xs text-zinc-400 mb-4">
+              Update the monthly spending limit for this category.
+            </p>
             <form onSubmit={handleSaveBudgetLimit} className="flex flex-col gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">

@@ -16,6 +16,7 @@ export interface Asset {
     location?: string;
     modelYear?: number;
     symbol?: string;
+    assetClass?: 'stock' | 'crypto';
     shares?: number;
     purchasePrice?: number;
     notes?: string;

@@ -12,6 +12,13 @@ export interface SyncPayload {
   payload: string;
 }
 
+export interface QuoteResponse {
+  symbol: string;
+  asset_class: 'stock' | 'crypto';
+  price: number;
+  cached: boolean;
+}
+
 class ApiClient {
   private getHeaders(): HeadersInit {
     const headers: HeadersInit = {
@@ -97,6 +104,26 @@ class ApiClient {
 
     const data: SyncPayload = await res.json();
     return data.payload;
+  }
+
+  async fetchQuote(symbol: string, assetClass: 'stock' | 'crypto'): Promise<QuoteResponse> {
+    const params = new URLSearchParams({ symbol, asset_class: assetClass });
+    const res = await fetch(`${API_BASE_URL}/market-data/quote?${params.toString()}`, {
+      method: 'GET',
+      headers: this.getHeaders(),
+    });
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        throw new Error(`Quote not found for ${symbol}`);
+      }
+      if (res.status === 503) {
+        throw new Error(`Quote provider unavailable for ${symbol}`);
+      }
+      throw new Error('Quote fetch failed');
+    }
+
+    return res.json();
   }
 
   async saveSync(payload: string): Promise<void> {

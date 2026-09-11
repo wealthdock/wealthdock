@@ -5,25 +5,25 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "06:00"
+      time: '06:00'
       timezone: Europe/Berlin
     open-pull-requests-limit: 5
     versioning-strategy: increase
     labels: [dependencies]
     commit-message:
-      prefix: "deps"
+      prefix: 'deps'
     groups:
       npm-dependencies:
-        patterns: ["*"]
+        patterns: ['*']
         update-types: [minor, patch]
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
       day: monday
-      time: "06:30"
+      time: '06:30'
       timezone: Europe/Berlin
     open-pull-requests-limit: 5
     labels: [dependencies]
     commit-message:
-      prefix: "ci"
+      prefix: 'ci'

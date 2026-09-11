@@ -6,12 +6,28 @@ type TimeRange = '1M' | '6M' | '1Y' | 'ALL';
 type ChartMetric = 'total' | AssetType;
 
 const METRIC_MAP: Record<ChartMetric, { label: string; color: string; bgGradient: string }> = {
-  total: { label: 'Total Net Worth', color: '#6366f1', bgGradient: 'from-indigo-500/20 to-transparent' },
-  bank: { label: 'Bank Accounts', color: '#818cf8', bgGradient: 'from-indigo-400/20 to-transparent' },
+  total: {
+    label: 'Total Net Worth',
+    color: '#6366f1',
+    bgGradient: 'from-indigo-500/20 to-transparent',
+  },
+  bank: {
+    label: 'Bank Accounts',
+    color: '#818cf8',
+    bgGradient: 'from-indigo-400/20 to-transparent',
+  },
   cash: { label: 'Cash', color: '#34d399', bgGradient: 'from-emerald-400/20 to-transparent' },
-  real_estate: { label: 'Real Estate', color: '#38bdf8', bgGradient: 'from-sky-400/20 to-transparent' },
+  real_estate: {
+    label: 'Real Estate',
+    color: '#38bdf8',
+    bgGradient: 'from-sky-400/20 to-transparent',
+  },
   vehicle: { label: 'Vehicles', color: '#fbbf24', bgGradient: 'from-amber-400/20 to-transparent' },
-  investment: { label: 'Investments', color: '#a78bfa', bgGradient: 'from-violet-400/20 to-transparent' },
+  investment: {
+    label: 'Investments',
+    color: '#a78bfa',
+    bgGradient: 'from-violet-400/20 to-transparent',
+  },
 };
 
 export function HistoryChart() {
@@ -23,7 +39,8 @@ export function HistoryChart() {
   // Filter history based on range
   const filteredHistory = useMemo(() => {
     let limit = MOCK_HISTORY.length;
-    if (timeRange === '1M') limit = 2; // last 2 snapshots
+    if (timeRange === '1M')
+      limit = 2; // last 2 snapshots
     else if (timeRange === '6M') limit = 6;
     else if (timeRange === '1Y') limit = 12;
 
@@ -120,13 +137,20 @@ export function HistoryChart() {
   const selectedPoint = hoveredPointIndex !== null ? svgCoords[hoveredPointIndex] : null;
 
   return (
-    <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xl" ref={containerRef}>
+    <div
+      className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xl"
+      ref={containerRef}
+    >
       {/* Header and range toggles */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400">Net Worth Development</h3>
+          <h3 className="text-sm font-semibold tracking-wider uppercase text-zinc-400">
+            Net Worth Development
+          </h3>
           <p className="text-2xl font-bold text-white mt-1">
-            {selectedPoint ? formatCurrency(selectedPoint.value) : formatCurrency(chartPoints[chartPoints.length - 1]?.value || 0)}
+            {selectedPoint
+              ? formatCurrency(selectedPoint.value)
+              : formatCurrency(chartPoints[chartPoints.length - 1]?.value || 0)}
             <span className="text-xs font-normal text-zinc-400 ml-2">
               {selectedPoint ? formatDate(selectedPoint.date) : 'Current Balance'}
             </span>
@@ -183,9 +207,32 @@ export function HistoryChart() {
           onMouseLeave={handleMouseLeave}
         >
           {/* Grids / Guidelines */}
-          <line x1={paddingX} y1={paddingY} x2={width - paddingX} y2={paddingY} stroke="#27272a" strokeWidth={1} strokeDasharray="4 4" />
-          <line x1={paddingX} y1={height / 2} x2={width - paddingX} y2={height / 2} stroke="#27272a" strokeWidth={1} strokeDasharray="4 4" />
-          <line x1={paddingX} y1={height - paddingY} x2={width - paddingX} y2={height - paddingY} stroke="#27272a" strokeWidth={1} />
+          <line
+            x1={paddingX}
+            y1={paddingY}
+            x2={width - paddingX}
+            y2={paddingY}
+            stroke="#27272a"
+            strokeWidth={1}
+            strokeDasharray="4 4"
+          />
+          <line
+            x1={paddingX}
+            y1={height / 2}
+            x2={width - paddingX}
+            y2={height / 2}
+            stroke="#27272a"
+            strokeWidth={1}
+            strokeDasharray="4 4"
+          />
+          <line
+            x1={paddingX}
+            y1={height - paddingY}
+            x2={width - paddingX}
+            y2={height - paddingY}
+            stroke="#27272a"
+            strokeWidth={1}
+          />
 
           {/* Render Area with Gradient */}
           <defs>
@@ -195,9 +242,7 @@ export function HistoryChart() {
             </linearGradient>
           </defs>
 
-          {areaPath && (
-            <path d={areaPath} fill="url(#areaGradient)" />
-          )}
+          {areaPath && <path d={areaPath} fill="url(#areaGradient)" />}
 
           {/* Render Trend Line */}
           {linePath && (

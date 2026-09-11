@@ -6,9 +6,9 @@ Part of the [wealthdock](https://github.com/wealthdock) organization — see the
 
 ## Layout
 
-| Path        | Description                |
-| ----------- | --------------------------- |
-| `apps/web`  | Vite + React web app        |
+| Path       | Description          |
+| ---------- | -------------------- |
+| `apps/web` | Vite + React web app |
 
 More apps (e.g. a desktop client) and shared `packages/*` will be added as the product grows.
 

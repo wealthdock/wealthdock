@@ -15,10 +15,10 @@ export function App() {
   const [authEmail, setAuthEmail] = useState<string | null>(api.getEmail());
   const [offlineMode, setOfflineMode] = useState(() => {
     const isTest = import.meta.env.MODE === 'test';
-    const isVitest = typeof window !== 'undefined' && (
-      (window as unknown as Record<string, unknown>).__vitest_worker__ !== undefined || 
-      (window as unknown as Record<string, unknown>).custom_vitest_flag !== undefined
-    );
+    const isVitest =
+      typeof window !== 'undefined' &&
+      ((window as unknown as Record<string, unknown>).__vitest_worker__ !== undefined ||
+        (window as unknown as Record<string, unknown>).custom_vitest_flag !== undefined);
     if (isTest || isVitest) return true;
     return api.isAuthenticated();
   });
@@ -81,7 +81,7 @@ export function App() {
   const saveSyncData = async (
     newAssets: Asset[],
     newBudgets: CategoryBudget[],
-    newTx: Transaction[]
+    newTx: Transaction[],
   ) => {
     // Cache locally
     localStorage.setItem('wealthdock_offline_assets', JSON.stringify(newAssets));
@@ -144,7 +144,7 @@ export function App() {
       <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-950 text-zinc-100 p-4">
         <div className="w-full max-w-md p-8 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
-          
+
           <div className="text-center mb-8">
             <h1 className="text-3xl font-extrabold text-white tracking-tight">wealthdock</h1>
             <p className="text-sm text-zinc-400 mt-2">Sign in to sync your data across devices</p>
@@ -199,11 +199,13 @@ export function App() {
               onClick={() => setIsRegistering(!isRegistering)}
               className="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition"
             >
-              {isRegistering ? 'Already have an account? Sign In' : "Don't have an account? Create one"}
+              {isRegistering
+                ? 'Already have an account? Sign In'
+                : "Don't have an account? Create one"}
             </button>
-            
+
             <div className="border-t border-zinc-800 my-2" />
-            
+
             <button
               onClick={handleContinueOffline}
               className="text-xs text-zinc-500 hover:text-zinc-350 transition"
@@ -218,7 +220,6 @@ export function App() {
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-zinc-950 text-zinc-100 selection:bg-zinc-800 selection:text-white">
-      
       {/* Network / Offline warning banners */}
       {isOffline && (
         <div className="w-full bg-amber-500/15 border-b border-amber-500/30 py-2 text-center text-xs text-amber-400 font-medium px-4">

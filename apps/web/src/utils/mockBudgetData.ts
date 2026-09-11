@@ -1,10 +1,17 @@
 import { CategoryBudget, Transaction, ExpenseCategory } from '../types/budget';
 
-export const EXPENSE_CATEGORY_MAP: Record<ExpenseCategory, { label: string; colorClass: string; bgClass: string }> = {
+export const EXPENSE_CATEGORY_MAP: Record<
+  ExpenseCategory,
+  { label: string; colorClass: string; bgClass: string }
+> = {
   housing: { label: 'Housing', colorClass: 'text-indigo-400', bgClass: 'bg-indigo-500' },
   utilities: { label: 'Utilities', colorClass: 'text-sky-400', bgClass: 'bg-sky-500' },
   groceries: { label: 'Groceries', colorClass: 'text-emerald-400', bgClass: 'bg-emerald-500' },
-  transportation: { label: 'Transportation', colorClass: 'text-amber-400', bgClass: 'bg-amber-500' },
+  transportation: {
+    label: 'Transportation',
+    colorClass: 'text-amber-400',
+    bgClass: 'bg-amber-500',
+  },
   entertainment: { label: 'Entertainment', colorClass: 'text-pink-400', bgClass: 'bg-pink-500' },
   insurance: { label: 'Insurance', colorClass: 'text-teal-400', bgClass: 'bg-teal-500' },
   miscellaneous: { label: 'Miscellaneous', colorClass: 'text-zinc-400', bgClass: 'bg-zinc-500' },
@@ -75,7 +82,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     date: '2026-08-04',
     amount: 80,
     category: 'groceries',
-    description: 'Trader Joe\'s',
+    description: "Trader Joe's",
   },
   {
     id: 't9',
